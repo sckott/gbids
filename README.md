@@ -13,6 +13,28 @@ Configuration might change, but right now using [webdis](http://webd.is/), a JSO
 
 ## start
 
+start Redis
+
+```
+redis-server
+```
+
+start Webdis
+
+```
+webdis &
+```
+
+Load data
+
+> requires downloading data from NCBI FTP server first...takes a while. Once you have the unzipped file:
+
+```
+sh dataprep.sh 100
+```
+
+where the `100` is the number of keys (accession numbers) to input into Redis. Tried up to 10 million so far on my macbook pro with 8 GB, works fine. Dumping to disk from 10 million keys gives ~ 164 mb `dump.rdb` file
+
 ```
 hub clone sckott/gbcheck
 cd gbcheck
@@ -52,3 +74,7 @@ curl -XPOST 'http://localhost:8888/match' -F ids='AACY024124486,AACY024124483,as
 #>   "AACY024124476": true
 #> }
 ```
+
+## todo
+
+* probably dont need webdis, just fun to play with
