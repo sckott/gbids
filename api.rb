@@ -19,7 +19,15 @@ class FBApp < Sinatra::Application
   # end
 
   not_found do
+    halt 400, {'Content-Type' => 'application/json'}, MultiJson.dump({ 'error' => 'an error occurred' })
+  end
+
+  not_found do
     halt 404, {'Content-Type' => 'application/json'}, MultiJson.dump({ 'error' => 'route not found' })
+  end
+
+  not_found do
+    halt 414, {'Content-Type' => 'application/json'}, MultiJson.dump({ 'error' => 'URL too long, reduce number of IDs or use POST' })
   end
 
   error 500 do
@@ -34,7 +42,7 @@ class FBApp < Sinatra::Application
   end
 
   # prohibit certain methods
-  route :put, :post, :delete, :copy, :options, :trace, '/*' do
+  route :put, :delete, :copy, :options, :trace, '/*' do
     halt 405
   end
 
@@ -51,21 +59,36 @@ class FBApp < Sinatra::Application
     })
   end
 
-  get '/match/:id' do
+  get '/match/:ids' do
     match_id
+  end
+
+  post '/match/?' do
+    match_id_post
   end
 
   # helpers
   def match_id
-    # args = { query: self.query, filter: filt, offset: self.offset,
-    #           rows: self.limit, sample: self.sample, sort: self.sort,
-    #           order: self.order, facet: self.facet }
-    # opts = args.delete_if { |k, v| v.nil? }
-    ids = params[:id].gsub(',', '/')
+    ids = params[:ids].gsub(',', '/')
     conn = Faraday.new(:url => 'http://127.0.0.1:7379/MGET/' + ids)
     res = conn.get
     matches = MultiJson.load(res.body)['MGET'].map { |x| !x.nil? }
-    res = Hash[params[:id].split(',').zip matches]
+    res = Hash[params[:ids].split(',').zip matches]
+    return MultiJson.dump(res)
+  end
+
+  def match_id_post
+    #puts params[:ids]
+    ids = 'MGET/' + params[:ids].gsub(',', '/')
+    #puts 'MGET/' + ids
+    conn = Faraday.new(:url => 'http://127.0.0.1:7379')
+    res = conn.post do |req|
+      req.headers['Content-Type'] = 'text/plain'
+      req.body = ids
+    end
+    matches = MultiJson.load(res.body)['MGET'].map { |x| !x.nil? }
+    #puts matches
+    res = Hash[params[:ids].split(',').zip matches]
     return MultiJson.dump(res)
   end
 

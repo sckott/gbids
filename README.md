@@ -16,13 +16,13 @@ Configuration might change, but right now using [webdis](http://webd.is/), a JSO
 ```
 hub clone sckott/gbcheck
 cd gbcheck
-thin start
+unicorn -p 8888
 ```
 
 ## Example
 
 ```
-curl 'http://localhost:3000/heartbeat' | jq .
+curl 'http://localhost:8888/heartbeat' | jq .
 #> {
 #>   "routes": [
 #>     "/match/:identifier",
@@ -32,7 +32,18 @@ curl 'http://localhost:3000/heartbeat' | jq .
 ```
 
 ```
-curl 'http://localhost:3000/match/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476'
+curl 'http://localhost:8888/match/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476'
+#> {
+#>   "AACY024124486": true,
+#>   "AACY024124483": true,
+#>   "asdfd": false,
+#>   "asdf": false,
+#>   "AACY024124476": true
+#> }
+```
+
+```
+curl -XPOST 'http://localhost:8888/match' -F ids='AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
 #> {
 #>   "AACY024124486": true,
 #>   "AACY024124483": true,
