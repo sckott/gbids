@@ -1,5 +1,5 @@
-Genbank ID checker API
-======================
+Genbank ID checker/converter API
+================================
 
 Right now setup to load Genbank accession numbers into Redis, and provides an API to match accession numbers against the in memory data.
 
