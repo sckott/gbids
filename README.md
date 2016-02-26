@@ -19,7 +19,8 @@ Using Ruby/Sinatra to make the API itself. Accession id's are stored directly in
 start Redis
 
 ```
-redis-server
+sudo redis-server /etc/redis-6379.conf
+sudo redis-server /etc/redis-6380.conf
 ```
 
 Load data
