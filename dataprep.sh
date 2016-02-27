@@ -20,8 +20,15 @@ cat accdat.txt | redis-cli -p 6379 --pipe
 cat gidat.txt | redis-cli -p 6380 --pipe
 
 echo '>> cleaning up'
-rm gbsmall.txt accdat.txt gidat.txt
+rm accdat.txt gidat.txt
 
 echo ">>$n IDs now in Redis :)"
 
 echo '>> done'
+
+
+split -l 1000000 accdat.txt accchunks
+for f in accchunks*; do redis-cli -p 6379 --pipe; done
+
+# compress file
+gzip GbAccList.0207.2016
