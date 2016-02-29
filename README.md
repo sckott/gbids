@@ -9,7 +9,7 @@ Using Ruby/Sinatra to make the API itself. Accession id's are stored directly in
 
 ## base url
 
-[http://52.33.101.178:8877](http://52.33.101.178:8877)
+[https://gbids.xyz](https://gbids.xyz)
 
 ## API Endpoints
 
@@ -55,7 +55,7 @@ unicorn -c unicorn.conf -D
 using [curl](https://curl.haxx.se/) and [jq](https://stedolan.github.io/jq/)
 
 ```
-curl 'http://52.33.101.178:8877/heartbeat' | jq .
+curl 'https://gbids.xyz/heartbeat' | jq .
 #> {
 #>   "routes": [
 #>     "/heartbeat",
@@ -74,7 +74,7 @@ curl 'http://52.33.101.178:8877/heartbeat' | jq .
 ```
 
 ```
-curl 'http://52.33.101.178:8877/acc/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
+curl 'https://gbids.xyz/acc/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
 #> {
 #>   "AACY024124486": true,
 #>   "AACY024124483": true,
@@ -85,7 +85,7 @@ curl 'http://52.33.101.178:8877/acc/AACY024124486,AACY024124483,asdfd,asdf,AACY0
 ```
 
 ```
-curl -XPOST 'http://52.33.101.178:8877/acc' -F ids='AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
+curl -XPOST 'https://gbids.xyz/acc' -F ids='AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
 #> {
 #>   "AACY024124486": true,
 #>   "AACY024124483": true,
@@ -96,7 +96,7 @@ curl -XPOST 'http://52.33.101.178:8877/acc' -F ids='AACY024124486,AACY024124483,
 ```
 
 ```
-curl 'http://52.33.101.178:8877/acc2gi/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
+curl 'https://gbids.xyz/acc2gi/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
 #> {
 #>   "AACY024124486": "129566184",
 #>   "AACY024124483": "129566187",
@@ -107,7 +107,7 @@ curl 'http://52.33.101.178:8877/acc2gi/AACY024124486,AACY024124483,asdfd,asdf,AA
 ```
 
 ```
-curl 'http://52.33.101.178:8877/random/gi?n=2' | jq .
+curl 'https://gbids.xyz/random/gi?n=2' | jq .
 #> [
 #>   "129566380",
 #>   "129566565"
@@ -115,7 +115,7 @@ curl 'http://52.33.101.178:8877/random/gi?n=2' | jq .
 ```
 
 ```
-curl 'http://52.33.101.178:8877/random/acc?n=2' | jq .
+curl 'https://gbids.xyz/random/acc?n=2' | jq .
 #> [
 #>   "AACY024123704",
 #>   "AACY024123612"
