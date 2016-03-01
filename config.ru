@@ -5,5 +5,5 @@ require 'redis'
 
 map '/' do
 	require File.join( File.dirname(__FILE__), 'api.rb')
-	run FBApp
+	run GBApp
 end
