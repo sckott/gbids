@@ -23,8 +23,6 @@ Using Ruby/Sinatra to make the API itself. Accession id's are stored directly in
 * `/acc2gi` - `POST`
 * `/gi2acc/:id,:id,...` - `GET` - get accession numbers from gi numbers
 * `/gi2acc` - `POST`
-* `/random/acc?n=` get a set of random accession numbers
-* `/random/gi?n=` get a set of random gi numbers
 
 ## start
 
@@ -32,23 +30,13 @@ start Redis
 
 ```
 sudo redis-server /etc/redis-6379.conf
-sudo redis-server /etc/redis-6380.conf
 ```
 
 Load data
 
-> requires downloading data from NCBI FTP server first...takes a while. Once you have the unzipped file:
-
-```
-sh dataprep.sh 1000
-```
-
-where the `100` is the number of keys (accession numbers) to input into Redis. Tried up to 10 million so far on my macbook pro with 8 GB, works fine. Dumping to disk from 10 million keys gives ~ 164 mb `dump.rdb` file
-
-```
-hub clone sckott/gbcheck && cd gbcheck
-unicorn -c unicorn.conf -D
-```
+* downloading data from NCBI FTP server first...takes a while
+* uncompress files
+* mysql stuff...
 
 ## Example
 
@@ -56,72 +44,118 @@ using [curl](https://curl.haxx.se/) and [jq](https://stedolan.github.io/jq/)
 
 ```
 curl 'https://gbids.xyz/heartbeat' | jq .
-#> {
-#>   "routes": [
-#>     "/heartbeat",
-#>     "/acc/:accessions (GET)",
-#>     "/acc (POST)",
-#>     "/gi/:gi_numbers (GET)",
-#>     "/gi (POST)",
-#>     "/acc2gi/:accessions (GET)",
-#>     "/acc2gi (POST)",
-#>     "/gi2acc/:gi_numbers (GET)",
-#>     "/gi2acc (POST)",
-#>     "/random/acc?n=",
-#>     "/random/gi?n="
-#>   ]
-#> }
+{
+  "routes": [
+    "/heartbeat",
+    "/acc/:accessions (GET)",
+    "/acc (POST)",
+    "/gi/:gi_numbers (GET)",
+    "/gi (POST)",
+    "/acc2gi/:accessions (GET)",
+    "/acc2gi (POST)",
+    "/gi2acc/:gi_numbers (GET)",
+    "/gi2acc (POST)"
+  ]
+}
 ```
 
 ```
 curl 'https://gbids.xyz/acc/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
-#> {
-#>   "AACY024124486": true,
-#>   "AACY024124483": true,
-#>   "asdfd": false,
-#>   "asdf": false,
-#>   "AACY024124476": true
-#> }
+{
+  "matched": 3,
+  "returned": 5,
+  "data": {
+    "AACY024124486": true,
+    "AACY024124483": true,
+    "asdfd": false,
+    "asdf": false,
+    "AACY024124476": true
+  },
+  "error": null
+}
 ```
 
 ```
 curl -XPOST 'https://gbids.xyz/acc' -F ids='AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
-#> {
-#>   "AACY024124486": true,
-#>   "AACY024124483": true,
-#>   "asdfd": false,
-#>   "asdf": false,
-#>   "AACY024124476": true
-#> }
+{
+  "matched": 3,
+  "returned": 5,
+  "data": {
+    "AACY024124486": true,
+    "AACY024124483": true,
+    "asdfd": false,
+    "asdf": false,
+    "AACY024124476": true
+  },
+  "error": null
+}
+```
+
+```
+curl 'https://gbids.xyz/gi/129566194,129566187,129566184,asdfafd' | jq .
+{
+  "matched": 3,
+  "returned": 4,
+  "data": {
+    "129566194": true,
+    "129566187": true,
+    "129566184": true,
+    "asdfafd": false
+  },
+  "error": null
+}
 ```
 
 ```
 curl 'https://gbids.xyz/acc2gi/AACY024124486,AACY024124483,asdfd,asdf,AACY024124476' | jq .
-#> {
-#>   "AACY024124486": "129566184",
-#>   "AACY024124483": "129566187",
-#>   "asdfd": null,
-#>   "asdf": null,
-#>   "AACY024124476": "129566194"
-#> }
+{
+  "matched": 3,
+  "returned": 5,
+  "data": [
+    {
+      "accession": "AACY024124476",
+      "gi": 129566194
+    },
+    {
+      "accession": "AACY024124483",
+      "gi": 129566187
+    },
+    {
+      "accession": "AACY024124486",
+      "gi": 129566184
+    },
+    {
+      "accession": "asdfd",
+      "gi": null
+    },
+    {
+      "accession": "asdf",
+      "gi": null
+    }
+  ],
+  "error": null
+}
 ```
 
 ```
-curl 'https://gbids.xyz/random/gi?n=2' | jq .
-#> [
-#>   "129566380",
-#>   "129566565"
-#> ]
+curl 'https://gbids.xyz/gi2acc/129566194,129566187,129566184' | jq .
+{
+  "matched": 3,
+  "returned": 3,
+  "data": [
+    {
+      "accession": "AACY024124486",
+      "gi": 129566184
+    },
+    {
+      "accession": "AACY024124483",
+      "gi": 129566187
+    },
+    {
+      "accession": "AACY024124476",
+      "gi": 129566194
+    }
+  ],
+  "error": null
+}
 ```
-
-```
-curl 'https://gbids.xyz/random/acc?n=2' | jq .
-#> [
-#>   "AACY024123704",
-#>   "AACY024123612"
-#> ]
-```
-
-## todo
-
-* ...

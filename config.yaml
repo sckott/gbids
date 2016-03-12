@@ -4,7 +4,7 @@ caching:
 db:
   adapter: mysql2
   encoding: utf8
-  host: localhost
+  host: mysql
   username: root
   password: root
   port: 3306
