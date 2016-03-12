@@ -1,17 +1,33 @@
 require 'rubygems'
-require 'sinatra'
+require "sinatra"
 require "multi_json"
+require "yaml"
 require "sinatra/multi_route"
-require 'redis'
-#require File.join File.dirname(__FILE__), "utils_fxns"
+require "active_record"
+require "redis"
+require "mysql2"
+require_relative 'model'
+require_relative 'utils'
 
-$redis1 = Redis.new host: ENV.fetch('REDIS_PORT_6379_TCP_ADDR', 'localhost'),
+$config = YAML::load_file(File.join(__dir__, ENV['RACK_ENV'] == 'test' ? 'test_config.yaml' : 'config.yaml'))
+
+ActiveRecord::Base.establish_connection($config['db'])
+
+$redis = Redis.new host: ENV.fetch('REDIS_PORT_6379_TCP_ADDR', 'localhost'),
                    port: ENV.fetch('REDIS_PORT_6379_TCP_PORT', 6379)
-$redis2 = Redis.new host: ENV.fetch('REDIS_PORT_6380_TCP_ADDR', 'localhost'),
-                   port: ENV.fetch('REDIS_PORT_6380_TCP_PORT', 6380)
 
-class FBApp < Sinatra::Application
+class GBApp < Sinatra::Application
   register Sinatra::MultiRoute
+
+  # before do
+  #   puts '[Params]'
+  #   p params
+  # end
+
+  # before do
+  #   puts '[Env]'
+  #   p env
+  # end
 
   not_found do
     halt 400, {'Content-Type' => 'application/json'}, MultiJson.dump({ 'error' => 'an error occurred' })
@@ -30,6 +46,21 @@ class FBApp < Sinatra::Application
     headers "Access-Control-Allow-Methods" => "HEAD, GET, POST"
     headers "Access-Control-Allow-Origin" => "*"
     cache_control :public, :must_revalidate, :max_age => 60
+
+    if $config['caching']
+      @cache_key = Digest::MD5.hexdigest(env['REQUEST_METHOD'] + request.path)
+      if $redis.exists(@cache_key)
+        headers 'Cache-Hit' => 'true'
+        halt 200, $redis.get(@cache_key)
+      end
+    end
+  end
+
+  after do
+    # cache response in redis
+    if $config['caching'] && !response.headers['Cache-Hit'] && response.status == 200
+      $redis.set(@cache_key, response.body[0], ex: $config['caching']['expires'])
+    end
   end
 
   # prohibit certain methods
@@ -52,21 +83,9 @@ class FBApp < Sinatra::Application
         "/acc2gi/:accessions (GET)",
         "/acc2gi (POST)",
         "/gi2acc/:gi_numbers (GET)",
-        "/gi2acc (POST)",
-        "/random/acc?n=",
-        "/random/gi?n="
+        "/gi2acc (POST)"
       ]
     })
-  end
-
-  # random accession numbers
-  get '/random/acc/?' do
-    get_random_acc
-  end
-
-  # random GI numbers
-  get '/random/gi/?' do
-    get_random_gi
   end
 
   # check for accession numbers - GET
@@ -84,7 +103,7 @@ class FBApp < Sinatra::Application
     get_gi
   end
 
-  # get gi from accession numbers - GET
+  # get gi from accession numbers - POST
   post '/acc2gi/?' do
     get_gi
   end
@@ -104,54 +123,9 @@ class FBApp < Sinatra::Application
     get_acc
   end
 
-  # get acc from gi numbers - GET
+  # get acc from gi numbers - POST
   post '/gi2acc/?' do
     get_acc
-  end
-
-  # helpers
-  def match_id(x)
-    ids = params[:ids].split(',')
-    out = x.mget(ids)
-    matches = out.map { |x| !x.nil? }
-    res = Hash[params[:ids].split(',').zip matches]
-    return MultiJson.dump(res)
-  end
-
-  def match_id_acc
-    match_id($redis1)
-  end
-
-  def match_id_gi
-    match_id($redis2)
-  end
-
-  def get_gi
-    ids = params[:ids].split(',')
-    out = $redis1.mget(ids)
-    res = Hash[params[:ids].split(',').zip out]
-    return MultiJson.dump(res)
-  end
-
-  def get_acc
-    ids = params[:ids].split(',')
-    out = $redis2.mget(ids)
-    res = Hash[params[:ids].split(',').zip out]
-    return MultiJson.dump(res)
-  end
-
-  def get_random(x)
-    n = params[:n] || 10
-    res = n.to_i.times.collect { x.randomkey }
-    return MultiJson.dump(res)
-  end
-
-  def get_random_acc
-    get_random($redis1)
-  end
-
-  def get_random_gi
-    get_random($redis2)
   end
 
 end

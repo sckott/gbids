@@ -1,0 +1,11 @@
+---
+caching:
+  expires: 10800
+db:
+  adapter: mysql2
+  encoding: utf8
+  host: mysql
+  username: root
+  password: root
+  port: 3306
+  database: gbids
