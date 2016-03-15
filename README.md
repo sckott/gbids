@@ -4,8 +4,9 @@ Genbank ID checker/converter API
 ## Under the hood
 
 * API: Ruby/Sinatra
-* Storage: The text file dump is stored in a MySQL database
+* Storage: MySQL
 * Caching: Redis
+* Server: Caddy
 * We're currently serving ~200 of the ~650 million or so rows of data - will get remainder of data in soon
 * Will soon have a cron job update when new dump is available every Sunday
 
