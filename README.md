@@ -1,11 +1,13 @@
 Genbank ID checker/converter API
 ================================
 
-Right now setup to load Genbank accession numbers into Redis, and provides an API to match accession numbers against the in memory data.
-
 ## Under the hood
 
-Using Ruby/Sinatra to make the API itself. Accession id's are stored directly in Redis, in memory. Haven't sorted out yet whether we can actually store all ~650 million or so identifiers, and then there's the GI numbers as well, could be a different route on the API. If we can store all data in memory, this should be super fast, if not, will pursue another approach.
+* API: Ruby/Sinatra
+* Storage: The text file dump is stored in a MySQL database
+* Caching: Redis
+* We're currently serving ~200 of the ~650 million or so rows of data - will get remainder of data in soon
+* Will soon have a cron job update when new dump is available every Sunday
 
 ## base url
 
