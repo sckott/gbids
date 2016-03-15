@@ -1,6 +1,8 @@
 Genbank ID checker/converter API
 ================================
 
+API Status: [http://recology.info/gbidsstatus](http://recology.info/gbidsstatus) ([source for status page](https://github.com/sckott/gbidsstatus))
+
 ## Under the hood
 
 * API: Ruby/Sinatra
@@ -8,6 +10,8 @@ Genbank ID checker/converter API
 * Caching: Redis
   * each key cached for 3 hours
 * Server: Caddy
+  * https
+* Authentication: none
 * We're currently serving ~200 of the ~650 million or so rows of data - will get remainder of data in soon
 * Will soon have a cron job update when new dump is available every Sunday
 
