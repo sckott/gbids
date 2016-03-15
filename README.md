@@ -6,6 +6,7 @@ Genbank ID checker/converter API
 * API: Ruby/Sinatra
 * Storage: MySQL
 * Caching: Redis
+  * each key cached for 3 hours
 * Server: Caddy
 * We're currently serving ~200 of the ~650 million or so rows of data - will get remainder of data in soon
 * Will soon have a cron job update when new dump is available every Sunday
