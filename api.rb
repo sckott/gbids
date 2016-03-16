@@ -48,7 +48,7 @@ class GBApp < Sinatra::Application
     cache_control :public, :must_revalidate, :max_age => 60
 
     if $config['caching']
-      @cache_key = Digest::MD5.hexdigest(env['REQUEST_METHOD'] + request.path)
+      @cache_key = Digest::MD5.hexdigest(env['REQUEST_METHOD'] + request.path + env['QUERY_STRING'])
       if $redis.exists(@cache_key)
         headers 'Cache-Hit' => 'true'
         halt 200, $redis.get(@cache_key)
@@ -76,8 +76,10 @@ class GBApp < Sinatra::Application
     return MultiJson.dump({
       "routes" => [
         "/heartbeat",
+        "/acc (GET)",
         "/acc/:accessions (GET)",
         "/acc (POST)",
+        "/gi (GET)",
         "/gi/:gi_numbers (GET)",
         "/gi (POST)",
         "/acc2gi/:accessions (GET)",
@@ -87,6 +89,18 @@ class GBApp < Sinatra::Application
       ]
     })
   end
+
+  # get accession numbers - GET
+  get '/acc/?' do
+    get_accs
+  end
+
+  # get accession numbers - GET
+  get '/gi/?' do
+    get_gis
+  end
+
+
 
   # check for accession numbers - GET
   get '/acc/:ids' do

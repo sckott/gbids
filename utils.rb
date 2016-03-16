@@ -55,6 +55,31 @@ def get_acc
   end
 end
 
+# list accession ids
+def get_accs
+  begin
+    data = GBgetaccs.endpoint(params)
+  raise Exception.new('no results found') if data.length.zero?
+    dat = data.as_json.map(&:values).flatten
+    { matched: data.limit(nil).count(1), returned: dat.length, data: dat, error: nil }.to_json
+  rescue Exception => e
+    halt 400, err_body(e)
+  end
+end
+
+def get_gis
+  begin
+    data = GBgetgis.endpoint(params)
+  raise Exception.new('no results found') if data.length.zero?
+    dat = data.as_json.map(&:values).map(&:compact).flatten
+    { matched: data.limit(nil).count(1), returned: dat.length, data: dat, error: nil }.to_json
+  rescue Exception => e
+    halt 400, err_body(e)
+  end
+end
+
+
+
 def err_body(e)
   return { matched: 0, returned: 0, data: nil, error: { message: e.message }}.to_json
 end
