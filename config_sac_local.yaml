@@ -8,4 +8,4 @@ db:
   username: root
   password:
   port: 3306
-  database: fbapp
+  database: gbids

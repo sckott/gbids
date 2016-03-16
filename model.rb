@@ -50,9 +50,9 @@ class GBgetaccs < ActiveRecord::Base
       end
     end
     raise Exception.new('limit too large (max 5000)') unless (params[:limit] || 0) <= 5000
-    select('accession')
-      .limit(params[:limit] || 10)
+    limit(params[:limit] || 10)
       .offset(params[:offset])
+      .select('accession')
   end
 end
 
@@ -71,8 +71,8 @@ class GBgetgis < ActiveRecord::Base
       end
     end
     raise Exception.new('limit too large (max 5000)') unless (params[:limit] || 0) <= 5000
-    select('gi')
-      .limit(params[:limit] || 10)
+    limit(params[:limit] || 10)
       .offset(params[:offset])
+      .select('gi')
   end
 end
