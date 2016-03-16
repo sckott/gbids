@@ -3,6 +3,8 @@ Genbank ID checker/converter API
 
 API Status: [http://recology.info/gbidsstatus](http://recology.info/gbidsstatus) ([source for status page](https://github.com/sckott/gbidsstatus))
 
+API Docs: [http://recology.info/gbidsdocs/](http://recology.info/gbidsdocs/) (in progress)
+
 ## Under the hood
 
 * API: Ruby/Sinatra
@@ -23,8 +25,10 @@ API Status: [http://recology.info/gbidsstatus](http://recology.info/gbidsstatus)
 
 * `/` re-routes to `/heartbeat`
 * `/heartbeat` - list routes
+* `/acc` - `GET` - list accession ids
 * `/acc/:id,:id,...` - `GET` - submit many accession numbers, get back boolean (match or no match)
 * `/acc` - `POST`
+* `/gi` - `GET` - list gi numbers
 * `/gi/:id,:id,...` - `GET` - submit many gi numbers, get back boolean (match or no match)
 * `/gi` - `POST`
 * `/acc2gi/:id,:id,...` - `GET` - get gi numbers from accession numbers
