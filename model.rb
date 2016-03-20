@@ -39,6 +39,7 @@ class GBgetaccs < ActiveRecord::Base
   self.table_name = 'data'
   def self.endpoint(params)
     params.delete_if { |k, v| v.nil? || v.empty? }
+    params = params.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
 
     %i(limit offset).each do |p|
       unless params[p].nil?
@@ -60,6 +61,7 @@ class GBgetgis < ActiveRecord::Base
   self.table_name = 'data'
   def self.endpoint(params)
     params.delete_if { |k, v| v.nil? || v.empty? }
+    params = params.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
 
     %i(limit offset).each do |p|
       unless params[p].nil?

@@ -56,7 +56,7 @@ def get_acc
 end
 
 # list accession ids
-def get_accs
+def get_accs(params)
   begin
     data = GBgetaccs.endpoint(params)
   raise Exception.new('no results found') if data.length.zero?
@@ -67,7 +67,7 @@ def get_accs
   end
 end
 
-def get_gis
+def get_gis(params)
   begin
     data = GBgetgis.endpoint(params)
   raise Exception.new('no results found') if data.length.zero?

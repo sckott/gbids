@@ -19,15 +19,25 @@ $redis = Redis.new host: ENV.fetch('REDIS_PORT_6379_TCP_ADDR', 'localhost'),
 class GBApp < Sinatra::Application
   register Sinatra::MultiRoute
 
+  before do
+    puts '[Params]'
+    p params
+  end
+
   # before do
-  #   puts '[Params]'
-  #   p params
+  #   puts '[params[:ids]]'
+  #   p params[:ids]
   # end
 
   # before do
-  #   puts '[Env]'
-  #   p env
+  #   puts 'REQUEST_METHOD+request.path/+paramsids'
+  #   p env['REQUEST_METHOD'] + request.path + '/' + params[:ids]
   # end
+
+  before do
+    puts '[Env]'
+    p env
+  end
 
   not_found do
     halt 400, {'Content-Type' => 'application/json'}, MultiJson.dump({ 'error' => 'an error occurred' })
@@ -47,8 +57,15 @@ class GBApp < Sinatra::Application
     headers "Access-Control-Allow-Origin" => "*"
     cache_control :public, :must_revalidate, :max_age => 60
 
+    case env['REQUEST_METHOD']
+    when 'GET'
+      cache_string = env['REQUEST_METHOD'] + env['REQUEST_URI']
+    when 'POST'
+      cache_string = env['REQUEST_METHOD'] + env['REQUEST_URI'] + '/' + params[:ids]
+    end
+
     if $config['caching']
-      @cache_key = Digest::MD5.hexdigest(env['REQUEST_METHOD'] + request.path + env['QUERY_STRING'])
+      @cache_key = Digest::MD5.hexdigest(cache_string)
       if $redis.exists(@cache_key)
         headers 'Cache-Hit' => 'true'
         halt 200, $redis.get(@cache_key)
@@ -92,12 +109,12 @@ class GBApp < Sinatra::Application
 
   # get accession numbers - GET
   get '/acc/?' do
-    get_accs
+    get_accs(params)
   end
 
   # get accession numbers - GET
   get '/gi/?' do
-    get_gis
+    get_gis(params)
   end
 
 
