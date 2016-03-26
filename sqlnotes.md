@@ -45,3 +45,6 @@ http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-expand-volume.html
 
 # mysql dump, if needed
 sudo mysqldump -p gbids > gbids-backup-2016-03-15.sql
+
+# load dump file
+mysql gbids < gbids-dump-2016-03-21.sql
