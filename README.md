@@ -14,8 +14,9 @@ API Docs: [http://recology.info/gbidsdocs/](http://recology.info/gbidsdocs/) (in
 * Server: Caddy
   * https
 * Authentication: none
-* We're currently serving ~200 of the ~650 million or so rows of data - will get remainder of data in soon
-* Will soon have a cron job update when new dump is available every Sunday
+
+
+Will soon have a cron job update when new dump is available every Sunday, but for now we're about a month behind the current dump of identifiers.
 
 ## base url
 
