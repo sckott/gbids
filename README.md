@@ -1,6 +1,8 @@
 Genbank ID checker/converter API
 ================================
 
+__DOWN FOR NOW - MAY BRING BACK UP LATER, NOT A LOT OF USE, AND KINDA PRICY__
+
 API Status: [http://recology.info/gbidsstatus](http://recology.info/gbidsstatus) ([source for status page](https://github.com/sckott/gbidsstatus))
 
 API Docs: [http://recology.info/gbidsdocs/](http://recology.info/gbidsdocs/) (in progress)
