@@ -17,6 +17,7 @@ API Docs: [http://recology.info/gbidsdocs/](http://recology.info/gbidsdocs/) (in
   * https
 * Authentication: none
 
+* Instance: EC2,
 
 Will soon have a cron job update when new dump is available every Sunday, but for now we're about a month behind the current dump of identifiers.
 
