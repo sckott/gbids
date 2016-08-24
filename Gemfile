@@ -3,7 +3,7 @@ source "http://rubygems.org/"
 gem 'redis', '~> 3.3', '>= 3.3.1'
 gem 'multi_json', '~> 1.12', '>= 1.12.1'
 gem 'mysql2', '~> 0.4.4'
-gem 'activerecord', '~> 5.0', require: 'active_record'
+gem 'activerecord', '~> 4.2.7', require: 'active_record'
 
 group :manual do
   gem 'sinatra', '~> 1.4', '>= 1.4.7'
