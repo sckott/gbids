@@ -1,15 +1,15 @@
 source "http://rubygems.org/"
 
-gem 'redis', '~> 3.2', '>= 3.2.2'
-gem 'multi_json', '~> 1.11', '>= 1.11.2'
-gem 'mysql2', '~> 0.3.20'
-gem 'activerecord', '~> 4.2.3', require: 'active_record'
+gem 'redis', '~> 3.3', '>= 3.3.1'
+gem 'multi_json', '~> 1.12', '>= 1.12.1'
+gem 'mysql2', '~> 0.4.4'
+gem 'activerecord', '~> 5.0', require: 'active_record'
 
 group :manual do
   gem 'sinatra', '~> 1.4', '>= 1.4.7'
-  gem 'sinatra-contrib', '~> 1.4', '>= 1.4.6'
-  gem 'unicorn', '~> 4.8.3'
-  gem 'rake', '~> 10.4.2'
+  gem 'sinatra-contrib', '~> 1.4', '>= 1.4.7'
+  gem 'unicorn', '~> 5.1'
+  gem 'rake', '~> 11.2', '>= 11.2.2'
 end
 
 group :test do
