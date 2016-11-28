@@ -1,7 +1,7 @@
 Genbank ID checker/converter API
 ================================
 
-__We're back up! as of 2016-08-24__
+__Service is down as of 2016-11-27__
 
 API Status: <http://recology.info/gbidsstatus> ([source for status page](https://github.com/sckott/gbidsstatus))
 
